@@ -5,7 +5,7 @@
   <groupId>com.xcloud</groupId>
   <artifactId>ocfix</artifactId>
   <version>1.0</version>
-  <packaging>jar</packaging>
+  <packaging>war</packaging>
 
   <name>ocfix</name>
   <url>http://maven.apache.org</url>
@@ -75,6 +75,16 @@
       <artifactId>spring-tx</artifactId>
       <version>${spring.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-web</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-webmvc</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -89,9 +99,6 @@
           <source>1.7</source>
           <target>1.7</target>
           <encoding>UTF-8</encoding>
-          <compilerArguments>
-            <extdirs>src/main/webapp/WEB-INF/lib</extdirs>
-          </compilerArguments>
         </configuration>
       </plugin>
       <plugin>
