@@ -8,10 +8,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="vendor/bootstrap-table/bootstrap-table.min.css">
+<link rel="stylesheet" type="text/css" href="css/fixutils.css">
+<script src="js/jquery.min.js"></script>
+<script src="js/typeahead.bundle.min.js"></script>
+<script src="js/fixutils.js"></script>
 <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
 <script src="vendor/bootstrap-table/bootstrap-table.min.js"></script>
 <script src="vendor/bootstrap-table/bootstrap-table-locale-all.js"></script>
-<script src="js/jquery.min.js"></script>
 </head>
 <body>
 	<div class="container">
@@ -24,16 +27,16 @@
 			</div>
 		</div>
 		<div class="input-group">
-			<span class="input-group-addon">Please Input UserName:</span> <span
-				class="input-group-addon"> <input type="text"
-				class="form-control" placeholder="Search...">
-			</span> <span class="input-group-addon">
+			<span class="input-group-addon">Please Input UserName:</span>
+        <div id="users" class="input-group-addon">
+          <input class="typeahead" type="text" placeholder="User...">
+        </div>
+			<span class="input-group-addon">
 				<button type="button" class="btn btn-primary">Check now</button>
 			</span>
 		</div>
 	</div>
 	<div class="container">
-		<h1 class="text-center">User file cache info</h1>
 		<div id="toolbar">
 			<button id="remove" class="btn btn-danger" disabled>
 				<i class="glyphicon glyphicon-remove"></i> Delete
@@ -52,69 +55,45 @@
         selections = [];
     function initTable() {
         $table.bootstrapTable({
-            height: getHeight(),
-            columns: [
-                [
-                    {
+        	  height: getHeight(),
+            columns: [{
                         field: 'state',
                         checkbox: true,
-                        rowspan: 2,
                         align: 'center',
                         valign: 'middle'
                     }, {
-                        title: 'Item ID',
+                        title: 'fileid',
                         field: 'id',
-                        rowspan: 2,
                         align: 'center',
                         valign: 'middle',
-                        sortable: true,
-                        footerFormatter: totalTextFormatter
+                        width: '5%',
+                        sortable: true
                     }, {
-                        title: 'Item Detail',
-                        colspan: 3,
-                        align: 'center'
-                    }
-                ],
-                [
-                    {
-                        field: 'name',
-                        title: 'Item Name',
-                        sortable: true,
-                        editable: true,
-                        footerFormatter: totalNameFormatter,
-                        align: 'center'
-                    }, {
-                        field: 'price',
-                        title: 'Item Price',
-                        sortable: true,
+                        title: 'name',
                         align: 'center',
-                        editable: {
-                            type: 'text',
-                            title: 'Item Price',
-                            validate: function (value) {
-                                value = $.trim(value);
-                                if (!value) {
-                                    return 'This field is required';
-                                }
-                                if (!/^\$/.test(value)) {
-                                    return 'This field needs to start width $.'
-                                }
-                                var data = $table.bootstrapTable('getData'),
-                                    index = $(this).parents('tr').data('index');
-                                console.log(data[index]);
-                                return '';
-                            }
-                        },
-                        footerFormatter: totalPriceFormatter
+                        valign: 'middle',
+                        width: '20%',
+                        sortable: true
                     }, {
-                        field: 'operate',
-                        title: 'Item Operate',
+                    	  title: 'path',
                         align: 'center',
-                        events: operateEvents,
-                        formatter: operateFormatter
-                    }
-                ]
-            ]
+                    	  valign: 'middle',
+                    	  width: '45%'
+                    }, {
+                    	  title: 'mimetype',
+                        align: 'center',
+                    	  valign: 'middle',
+                    	  width: '10%'
+                    }, {
+                    	  title: 'size',
+                    	  align: 'center',
+                    	  valign: 'middle'
+                    }, {
+                    	  title: 'action',
+                    	  align: 'center',
+                    	  valign: 'middle',
+                    	  width: '2%'
+                    }]
         });
         // sometimes footer render error.
         setTimeout(function () {
@@ -126,14 +105,6 @@
             // save your data, here just save the current page
             selections = getIdSelections();
             // push or splice the selections if you want to save all data selections
-        });
-        $table.on('expand-row.bs.table', function (e, index, row, $detail) {
-            if (index % 2 == 1) {
-                $detail.html('Loading from ajax request...');
-                $.get('LICENSE', function (res) {
-                    $detail.html(res.replace(/\n/g, '<br>'));
-                });
-            }
         });
         $table.on('all.bs.table', function (e, name, args) {
             console.log(name, args);
@@ -154,114 +125,30 @@
     }
     function getIdSelections() {
         return $.map($table.bootstrapTable('getSelections'), function (row) {
-            return row.id
+            return row.fileid
         });
-    }
-    function responseHandler(res) {
-        $.each(res.rows, function (i, row) {
-            row.state = $.inArray(row.id, selections) !== -1;
-        });
-        return res;
-    }
-    function detailFormatter(index, row) {
-        var html = [];
-        $.each(row, function (key, value) {
-            html.push('<p><b>' + key + ':</b> ' + value + '</p>');
-        });
-        return html.join('');
     }
     function operateFormatter(value, row, index) {
         return [
-            '<a class="like" href="javascript:void(0)" title="Like">',
-            '<i class="glyphicon glyphicon-heart"></i>',
-            '</a>  ',
             '<a class="remove" href="javascript:void(0)" title="Remove">',
             '<i class="glyphicon glyphicon-remove"></i>',
             '</a>'
         ].join('');
     }
     window.operateEvents = {
-        'click .like': function (e, value, row, index) {
-            alert('You click like action, row: ' + JSON.stringify(row));
-        },
         'click .remove': function (e, value, row, index) {
             $table.bootstrapTable('remove', {
-                field: 'id',
-                values: [row.id]
+                field: 'fileid',
+                values: [row.fileid]
             });
         }
     };
-    function totalTextFormatter(data) {
-        return 'Total';
-    }
-    function totalNameFormatter(data) {
-        return data.length;
-    }
-    function totalPriceFormatter(data) {
-        var total = 0;
-        $.each(data, function (i, row) {
-            total += +(row.price.substring(1));
-        });
-        return '$' + total;
-    }
     function getHeight() {
         return $(window).height() - $('h1').outerHeight(true);
     }
     $(function () {
-        var scripts = [
-                location.search.substring(1) || 'assets/bootstrap-table/src/bootstrap-table.js',
-                'assets/bootstrap-table/src/extensions/export/bootstrap-table-export.js',
-                'http://rawgit.com/hhurz/tableExport.jquery.plugin/master/tableExport.js',
-                'assets/bootstrap-table/src/extensions/editable/bootstrap-table-editable.js',
-                'http://rawgit.com/vitalets/x-editable/master/dist/bootstrap3-editable/js/bootstrap-editable.js'
-            ],
-            eachSeries = function (arr, iterator, callback) {
-                callback = callback || function () {};
-                if (!arr.length) {
-                    return callback();
-                }
-                var completed = 0;
-                var iterate = function () {
-                    iterator(arr[completed], function (err) {
-                        if (err) {
-                            callback(err);
-                            callback = function () {};
-                        }
-                        else {
-                            completed += 1;
-                            if (completed >= arr.length) {
-                                callback(null);
-                            }
-                            else {
-                                iterate();
-                            }
-                        }
-                    });
-                };
-                iterate();
-            };
-        eachSeries(scripts, getScript, initTable);
+        initTable();
     });
-    function getScript(url, callback) {
-        var head = document.getElementsByTagName('head')[0];
-        var script = document.createElement('script');
-        script.src = url;
-        var done = false;
-        // Attach handlers for all browsers
-        script.onload = script.onreadystatechange = function() {
-            if (!done && (!this.readyState ||
-                    this.readyState == 'loaded' || this.readyState == 'complete')) {
-                done = true;
-                if (callback)
-                    callback();
-                // Handle memory leak in IE
-                script.onload = script.onreadystatechange = null;
-            }
-        };
-        head.appendChild(script);
-        // We handle everything using the script element injection
-        return undefined;
-    }
 </script>
 </body>
 </html>
