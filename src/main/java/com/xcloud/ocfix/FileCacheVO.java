@@ -2,7 +2,6 @@ package com.xcloud.ocfix;
 
 public class FileCacheVO {
 
-    private Boolean state;
     private String userName;
     private Integer fileId;
     private Integer storage;
@@ -22,14 +21,6 @@ public class FileCacheVO {
     private Integer permissions;
     private String checksum;
     private boolean ifExists;
-
-    public Boolean getState() {
-        return state;
-    }
-
-    public void setState(Boolean state) {
-        this.state = state;
-    }
 
     public String getUserName() {
         return userName;

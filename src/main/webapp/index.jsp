@@ -24,9 +24,9 @@
 		<div class="row">
 			<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center">
 				<h1>Simple way to fix Cloud Drive file cache problem</h1>
-				<p>
+				<h4>
 					The easiest way to sync Cloud Drive and OSS file cache<br>
-				</p>
+				</h4>
 			</div>
 		</div>
 		<div class="row">

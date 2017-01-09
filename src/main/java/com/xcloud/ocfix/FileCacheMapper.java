@@ -10,7 +10,6 @@ public class FileCacheMapper implements RowMapper<FileCacheVO> {
     @Override
     public FileCacheVO mapRow(ResultSet rs, int rowNum) throws SQLException {
         FileCacheVO file = new FileCacheVO();
-        file.setState(false);
         file.setFileId(rs.getInt("fileid"));
         file.setStorage(rs.getInt("storage"));
         file.setPath(rs.getString("path"));

@@ -17,7 +17,7 @@ $(document).ready(function() {
 			}
 		}
 		if (!found) {
-			$("#input").notify("user "+user+" not found", "error");
+			$("#input").notify("user " + user + " not found", "error");
 		}
 	});
 });
@@ -81,16 +81,14 @@ function getFiles(storage) {
 function initTable(files) {
 	var $files = $('#files');
 	$files.show();
-	var $table = $('#table'), $remove = $('#remove'), selections = [];
+	var $table = $('#table'), $remove = $('#remove');
 	$table.bootstrapTable('destroy').bootstrapTable({
 		height : getHeight(),
 		exportDataType : "all",
 		rowStyle : function(row, index) {
 			var strclass = '';
 			if (row.ifExists == false) {
-				strclass = '';
-			} else if (row.ifExists == true) {
-				strclass = '';
+				strclass = 'danger';
 			} else {
 				return {};
 			}
@@ -99,7 +97,6 @@ function initTable(files) {
 			}
 		},
 		columns : [ {
-			field : 'state',
 			checkbox : true,
 			align : 'center',
 			valign : 'middle'
@@ -148,12 +145,30 @@ function initTable(files) {
 	setTimeout(function() {
 		$table.bootstrapTable('resetView');
 	}, 200);
-	$table.on('check.bs.table uncheck.bs.table '
-			+ 'check-all.bs.table uncheck-all.bs.table', function() {
+	$table.on('check.bs.table', function(event, row) {
+		var index = getIndex(row);
+		if (row.ifExists === true) {
+			$table.bootstrapTable('uncheck', index);
+		}
 		$remove
 				.prop('disabled',
 						!$table.bootstrapTable('getSelections').length);
-		selections = getIdSelections();
+	});
+	$table.on('uncheck.bs.table uncheck-all.bs.table', function() {
+		$remove
+				.prop('disabled',
+						!$table.bootstrapTable('getSelections').length);
+	})
+	$table.on('check-all.bs.table', function(event, rows) {
+		for (var i = 0; i < rows.length; i++) {
+			if (rows[i].ifExists === true) {
+				var index = getIndex(rows[i]);
+				$table.bootstrapTable('uncheck', index);
+			}
+		}
+		$remove
+				.prop('disabled',
+						!$table.bootstrapTable('getSelections').length);
 	});
 	$table.on('all.bs.table', function(e, name, args) {
 		console.log(name, args);
@@ -181,17 +196,31 @@ function initTable(files) {
 function getIdSelections() {
 	var $table = $('#table');
 	return $.map($table.bootstrapTable('getSelections'), function(row) {
-		return row.fileId
+		return row.fileId;
 	});
 }
 
 function operateFormatter(value, row, index) {
-	return [ '<a class="remove" href="javascript:void(0)" title="Remove">',
-			'<i class="glyphicon glyphicon-remove"></i>', '</a>' ].join('');
+	if (row.ifExists === false) {
+		return [ '<a class="remove" href="javascript:void(0)" title="Remove">',
+				'<i class="glyphicon glyphicon-remove"></i>', '</a>' ].join('');
+	}
 }
 
 function getHeight() {
 	return $(window).height() - $('h1').outerHeight(true);
+}
+
+function getIndex(row) {
+	var i = 0;
+	var $table = $('#table');
+	var allData = $table.bootstrapTable('getData');
+	for (; i < allData.length; i++) {
+		if (allData[i].fileId == row.fileId) {
+			break;
+		}
+	}
+	return i;
 }
 
 function removeFiles(ids) {

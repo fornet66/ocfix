@@ -1,5 +1,7 @@
 package com.xcloud.ocfix;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -17,8 +19,16 @@ public class FileCacheDao implements IBaseDao<FileCacheVO> {
 
     @Override
     public int insert(FileCacheVO t) {
-        String sql = "insert into oc_filecache_bak () values ()";
-        return jdbcTemplate.update(sql, new Object[] {});
+        String date = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+        String sql = "insert into oc_filecache_bak (" + "fileid, storage, path, path_hash, parent, name, mimetype, "
+                + "mimepart, size, mtime, storage_mtime, encrypted, "
+                + "unencrypted_size, etag, permissions, checksum, bak_time) "
+                + "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        return jdbcTemplate.update(sql,
+                new Object[] { t.getFileId(), t.getStorage(), t.getPath(), t.getPathHash(), t.getParent(), t.getName(),
+                        t.getMimeType(), t.getMimePart(), t.getSize(), t.getMtime(), t.getStorageMtime(),
+                        t.getEncrypted(), t.getUnencryptedSize(), t.getEtag(), t.getPermissions(), t.getChecksum(),
+                        date });
     }
 
     @Override
