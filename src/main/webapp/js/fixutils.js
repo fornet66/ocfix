@@ -3,6 +3,9 @@ $(document).ready(function() {
 	initUsers();
 	$("#check").click(function() {
 		var user = $("#input").val();
+		if (user === "") {
+			$("#input").notify("please input user", "error");
+		}
 		var jsonObj = JSON.parse(users);
 		for (var i = 0; i < jsonObj.length; i++) {
 			if (jsonObj[i].uid === user) {
@@ -11,6 +14,7 @@ $(document).ready(function() {
 				break;
 			}
 		}
+		$("#input").notify("user "+user+" not found", "error");
 	});
 });
 
@@ -79,10 +83,10 @@ function initTable(files) {
 		exportDataType : "all",
 		rowStyle : function(row, index) {
 			var strclass = "";
-			if (row.state == false) {
-				strclass = '';
-			} else if (row.state == true) {
+			if (row.ifExists == false) {
 				strclass = 'danger';
+			} else if (row.ifExists == true) {
+				strclass = '';
 			} else {
 				return {};
 			}

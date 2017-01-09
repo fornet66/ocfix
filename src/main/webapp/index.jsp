@@ -14,6 +14,7 @@
 <script src="vendor/bootstrap-table/bootstrap-table.min.js"></script>
 <script src="vendor/bootstrap-table/locale/bootstrap-table-en-US.min.js"></script>
 <script src="vendor/bootstrap-table/extensions/export/bootstrap-table-export.min.js"></script>
+<script src="js/notify.min.js"></script>
 <script src="js/typeahead.bundle.min.js"></script>
 <script src="js/tableExport.js"></script>
 <script src="js/fixutils.js"></script>
@@ -28,15 +29,19 @@
 				</p>
 			</div>
 		</div>
-		<div class="input-group">
-			<span class="input-group-addon">Please Input UserName:</span>
+		<div class="row">
+		<div class="col-md-3 col-sm3"></div>
+		<div class="col-md-6 col-sm6">
+		  <div class="input-group">
         <div class="input-group-addon">
           <input id="input" class="typeahead" type="text" placeholder="User...">
         </div>
-			<span class="input-group-addon">
-				<button id="check" type="button" class="btn btn-primary">Check now</button>
-			</span>
+        <span class="input-group-addon">
+				  <button id="check" type="button" class="btn btn-primary">Check now</button>
+        </span>
+		  </div>
 		</div>
+		<div class="col-md-3 col-sm3"></div>
 	</div>
 	<div id="files" class="container" style="display:none">
 		<div id="toolbar">

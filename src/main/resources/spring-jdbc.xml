@@ -40,7 +40,11 @@
 
 	<bean id="userDao" class="com.xcloud.ocfix.UserDao" />
   <bean id="fileCacheDao" class="com.xcloud.ocfix.FileCacheDao" />
-  <bean id="ossUtils" class="com.xcloud.ocfix.OssUtils" />
+  <bean id="ossUtils" class="com.xcloud.ocfix.OssUtils">
+    <property name="endpoint" value="${oss.endpoint}" />
+    <property name="accessKey" value="${oss.accessKey}" />
+    <property name="secretKey" value="${oss.secretKey}" />
+  </bean>
   <bean id="userUtils" class="com.xcloud.ocfix.UserUtils" />
   <bean id="fixUtils" class="com.xcloud.ocfix.FixUtils" />
 
