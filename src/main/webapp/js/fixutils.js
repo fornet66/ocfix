@@ -7,14 +7,18 @@ $(document).ready(function() {
 			$("#input").notify("please input user", "error");
 		}
 		var jsonObj = JSON.parse(users);
+		var found = false;
 		for (var i = 0; i < jsonObj.length; i++) {
 			if (jsonObj[i].uid === user) {
 				var storage = jsonObj[i].storage;
 				getFiles(storage);
+				found = true;
 				break;
 			}
 		}
-		$("#input").notify("user "+user+" not found", "error");
+		if (!found) {
+			$("#input").notify("user "+user+" not found", "error");
+		}
 	});
 });
 
@@ -82,9 +86,9 @@ function initTable(files) {
 		height : getHeight(),
 		exportDataType : "all",
 		rowStyle : function(row, index) {
-			var strclass = "";
+			var strclass = '';
 			if (row.ifExists == false) {
-				strclass = 'danger';
+				strclass = '';
 			} else if (row.ifExists == true) {
 				strclass = '';
 			} else {
