@@ -18,8 +18,7 @@ public class FileCacheDao implements IBaseDao<FileCacheVO> {
     @Override
     public int insert(FileCacheVO t) {
         String sql = "insert into oc_filecache_bak () values ()";
-        return jdbcTemplate.update(sql,
-                new Object[] { });
+        return jdbcTemplate.update(sql, new Object[] {});
     }
 
     @Override
@@ -48,7 +47,10 @@ public class FileCacheDao implements IBaseDao<FileCacheVO> {
 
     @Override
     public List<FileCacheVO> findByCondition(FileCacheVO cond) {
-        String sql = "select * from oc_filecache where storage=?";
+        String sql = "select fileid, storage, path, path_hash, parent, name, a.mimetype, "
+                + "b.mimetype as mimetype_name, mimepart, size, mtime, storage_mtime, encrypted, "
+                + "unencrypted_size, etag, permissions, checksum from oc_filecache a, oc_mimetypes b "
+                + "where storage=? and parent != -1 and a.mimetype=b.id order by path";
         try {
             return jdbcTemplate.query(sql, new Object[] { cond.getStorage() }, new FileCacheMapper());
         } catch (EmptyResultDataAccessException e) {

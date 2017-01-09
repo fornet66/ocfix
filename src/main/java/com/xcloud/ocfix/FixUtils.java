@@ -12,20 +12,20 @@ public class FixUtils {
     @Autowired
     private OssUtils ossUtils;
 
-    public List<FileCacheVO> findFiles(String userName) {
+    public List<FileCacheVO> findFiles(Integer storage) {
         FileCacheVO cond = new FileCacheVO();
-        cond.setStorage(1);
+        cond.setStorage(storage);
         List<FileCacheVO> list = fileCacheDao.findByCondition(cond);
-        for (FileCacheVO file : list) {
-            file.setIfExists(true);
-            String base = "data/";
-            String user = file.getUserName() + "/";
-            String path = file.getPath();
-            String url = base + user + path;
-            if (!ossUtils.findObject(url)) {
-                file.setIfExists(false);
-            }
-        }
+//        for (FileCacheVO file : list) {
+//            file.setIfExists(true);
+//            String base = "data/";
+//            String user = file.getUserName() + "/";
+//            String path = file.getPath();
+//            String url = base + user + path;
+//            if (!ossUtils.findObject(url)) {
+//                file.setIfExists(false);
+//            }
+//        }
         return list;
     }
 

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -24,10 +25,10 @@ public class FixController {
         return list;
     }
 
-    @RequestMapping(value = "/getfiles.do", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/getfiles.do/{storage}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public List<FileCacheVO> getFiles(String storage) {
-        List<FileCacheVO> list = null;
+    public List<FileCacheVO> getFiles(@PathVariable Integer storage) {
+        List<FileCacheVO> list = fixUtils.findFiles(storage);
         return list;
     }
 

@@ -10,11 +10,13 @@
 <link rel="stylesheet" type="text/css" href="vendor/bootstrap-table/bootstrap-table.min.css">
 <link rel="stylesheet" type="text/css" href="css/fixutils.css">
 <script src="js/jquery.min.js"></script>
-<script src="js/typeahead.bundle.min.js"></script>
-<script src="js/fixutils.js"></script>
 <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
 <script src="vendor/bootstrap-table/bootstrap-table.min.js"></script>
-<script src="vendor/bootstrap-table/bootstrap-table-locale-all.js"></script>
+<script src="vendor/bootstrap-table/locale/bootstrap-table-en-US.min.js"></script>
+<script src="vendor/bootstrap-table/extensions/export/bootstrap-table-export.min.js"></script>
+<script src="js/typeahead.bundle.min.js"></script>
+<script src="js/tableExport.js"></script>
+<script src="js/fixutils.js"></script>
 </head>
 <body>
 	<div class="container">
@@ -28,15 +30,15 @@
 		</div>
 		<div class="input-group">
 			<span class="input-group-addon">Please Input UserName:</span>
-        <div id="users" class="input-group-addon">
-          <input class="typeahead" type="text" placeholder="User...">
+        <div class="input-group-addon">
+          <input id="input" class="typeahead" type="text" placeholder="User...">
         </div>
 			<span class="input-group-addon">
-				<button type="button" class="btn btn-primary">Check now</button>
+				<button id="check" type="button" class="btn btn-primary">Check now</button>
 			</span>
 		</div>
 	</div>
-	<div class="container">
+	<div id="files" class="container" style="display:none">
 		<div id="toolbar">
 			<button id="remove" class="btn btn-danger" disabled>
 				<i class="glyphicon glyphicon-remove"></i> Delete
@@ -46,109 +48,8 @@
 			data-show-refresh="true" data-show-export="true"
 			data-pagination="true" data-id-field="fileid"
 			data-page-list="[10, 25, 50, 100, ALL]" data-show-footer="false"
-			data-side-pagination="server">
+			data-side-pagination="client">
 		</table>
 	</div>
-	<script>
-    var $table = $('#table'),
-        $remove = $('#remove'),
-        selections = [];
-    function initTable() {
-        $table.bootstrapTable({
-        	  height: getHeight(),
-            columns: [{
-                        field: 'state',
-                        checkbox: true,
-                        align: 'center',
-                        valign: 'middle'
-                    }, {
-                        title: 'fileid',
-                        field: 'id',
-                        align: 'center',
-                        valign: 'middle',
-                        width: '5%',
-                        sortable: true
-                    }, {
-                        title: 'name',
-                        align: 'center',
-                        valign: 'middle',
-                        width: '20%',
-                        sortable: true
-                    }, {
-                    	  title: 'path',
-                        align: 'center',
-                    	  valign: 'middle',
-                    	  width: '45%'
-                    }, {
-                    	  title: 'mimetype',
-                        align: 'center',
-                    	  valign: 'middle',
-                    	  width: '10%'
-                    }, {
-                    	  title: 'size',
-                    	  align: 'center',
-                    	  valign: 'middle'
-                    }, {
-                    	  title: 'action',
-                    	  align: 'center',
-                    	  valign: 'middle',
-                    	  width: '2%'
-                    }]
-        });
-        // sometimes footer render error.
-        setTimeout(function () {
-            $table.bootstrapTable('resetView');
-        }, 200);
-        $table.on('check.bs.table uncheck.bs.table ' +
-                'check-all.bs.table uncheck-all.bs.table', function () {
-            $remove.prop('disabled', !$table.bootstrapTable('getSelections').length);
-            // save your data, here just save the current page
-            selections = getIdSelections();
-            // push or splice the selections if you want to save all data selections
-        });
-        $table.on('all.bs.table', function (e, name, args) {
-            console.log(name, args);
-        });
-        $remove.click(function () {
-            var ids = getIdSelections();
-            $table.bootstrapTable('remove', {
-                field: 'id',
-                values: ids
-            });
-            $remove.prop('disabled', true);
-        });
-        $(window).resize(function () {
-            $table.bootstrapTable('resetView', {
-                height: getHeight()
-            });
-        });
-    }
-    function getIdSelections() {
-        return $.map($table.bootstrapTable('getSelections'), function (row) {
-            return row.fileid
-        });
-    }
-    function operateFormatter(value, row, index) {
-        return [
-            '<a class="remove" href="javascript:void(0)" title="Remove">',
-            '<i class="glyphicon glyphicon-remove"></i>',
-            '</a>'
-        ].join('');
-    }
-    window.operateEvents = {
-        'click .remove': function (e, value, row, index) {
-            $table.bootstrapTable('remove', {
-                field: 'fileid',
-                values: [row.fileid]
-            });
-        }
-    };
-    function getHeight() {
-        return $(window).height() - $('h1').outerHeight(true);
-    }
-    $(function () {
-        initTable();
-    });
-</script>
 </body>
 </html>

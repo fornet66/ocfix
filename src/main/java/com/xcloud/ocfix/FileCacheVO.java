@@ -2,6 +2,7 @@ package com.xcloud.ocfix;
 
 public class FileCacheVO {
 
+    private Boolean state;
     private String userName;
     private Integer fileId;
     private Integer storage;
@@ -10,6 +11,7 @@ public class FileCacheVO {
     private Integer parent;
     private String name;
     private Integer mimeType;
+    private String mimeTypeName;
     private Integer mimePart;
     private Long size;
     private Integer mtime;
@@ -20,6 +22,14 @@ public class FileCacheVO {
     private Integer permissions;
     private String checksum;
     private boolean ifExists;
+
+    public Boolean getState() {
+        return state;
+    }
+
+    public void setState(Boolean state) {
+        this.state = state;
+    }
 
     public String getUserName() {
         return userName;
@@ -83,6 +93,14 @@ public class FileCacheVO {
 
     public void setMimeType(Integer mimeType) {
         this.mimeType = mimeType;
+    }
+
+    public String getMimeTypeName() {
+        return mimeTypeName;
+    }
+
+    public void setMimeTypeName(String mimeTypeName) {
+        this.mimeTypeName = mimeTypeName;
     }
 
     public Integer getMimePart() {
