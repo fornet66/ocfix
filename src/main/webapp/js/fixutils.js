@@ -169,6 +169,7 @@ function initTable(files) {
 		});
 		removeFiles(ids);
 		$remove.prop('disabled', true);
+		stopPropagation();
 	});
 	$(window).resize(function() {
 		$table.bootstrapTable('resetView', {
