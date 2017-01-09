@@ -25,10 +25,10 @@ public class FixController {
         return list;
     }
 
-    @RequestMapping(value = "/getfiles.do/{storage}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/getfiles.do/{user}/{storage}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public List<FileCacheVO> getFiles(@PathVariable Integer storage) {
-        List<FileCacheVO> list = fixUtils.findFiles(storage);
+    public List<FileCacheVO> getFiles(@PathVariable String user, @PathVariable Integer storage) {
+        List<FileCacheVO> list = fixUtils.findFiles(user, storage);
         return list;
     }
 

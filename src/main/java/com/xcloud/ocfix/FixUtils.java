@@ -14,15 +14,19 @@ public class FixUtils {
     @Autowired
     private OssUtils ossUtils;
 
-    public List<FileCacheVO> findFiles(Integer storage) {
+    public List<FileCacheVO> findFiles(String userName, Integer storage) {
         FileCacheVO cond = new FileCacheVO();
+        cond.setUserName(userName);
         cond.setStorage(storage);
         List<FileCacheVO> list = fileCacheDao.findByCondition(cond);
         for (FileCacheVO file : list) {
             file.setIfExists(true);
             String base = "data/";
-            String user = file.getUserName() + "/";
+            String user = userName + "/";
             String path = file.getPath();
+            if (file.getMimeType().intValue() == 2) {
+                path = path + "/";
+            }
             String url = base + user + path;
             if (!ossUtils.findObject(url)) {
                 file.setIfExists(false);

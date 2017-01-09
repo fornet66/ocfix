@@ -44,6 +44,7 @@
     <property name="endpoint" value="${oss.endpoint}" />
     <property name="accessKey" value="${oss.accessKey}" />
     <property name="secretKey" value="${oss.secretKey}" />
+    <property name="bucketName" value="${oss.bucketName}" />
   </bean>
   <bean id="userUtils" class="com.xcloud.ocfix.UserUtils" />
   <bean id="fixUtils" class="com.xcloud.ocfix.FixUtils" />

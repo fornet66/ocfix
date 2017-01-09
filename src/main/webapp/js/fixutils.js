@@ -11,7 +11,7 @@ $(document).ready(function() {
 		for (var i = 0; i < jsonObj.length; i++) {
 			if (jsonObj[i].uid === user) {
 				var storage = jsonObj[i].storage;
-				getFiles(storage);
+				getFiles(user, storage);
 				found = true;
 				break;
 			}
@@ -64,8 +64,8 @@ function initUsers() {
 	});
 }
 
-function getFiles(storage) {
-	var url = getBasePath() + "/getfiles.do/" + storage;
+function getFiles(user, storage) {
+	var url = getBasePath() + "/getfiles.do/" + user + "/" + storage;
 	$.ajax({
 		url : url,
 		type : 'post',
