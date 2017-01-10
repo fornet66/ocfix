@@ -19,6 +19,7 @@ public class FixUtils {
         cond.setUserName(userName);
         cond.setStorage(storage);
         List<FileCacheVO> list = fileCacheDao.findByCondition(cond);
+        boolean foundone = false;
         for (FileCacheVO file : list) {
             file.setIfExists(true);
             String base = "data/";
@@ -30,19 +31,29 @@ public class FixUtils {
             String url = base + user + path;
             if (!ossUtils.findObject(url)) {
                 file.setIfExists(false);
+            } else {
+                foundone = true;
             }
         }
-        return list;
+        if (foundone) {
+            return list;
+        }
+        return null;
     }
 
     public boolean fixit(FileCacheVO file) {
         String base = "data/";
         String user = file.getUserName() + "/";
         String path = file.getPath();
+        if (file.getMimeType().intValue() == 2) {
+            path = path + "/";
+        }
         String url = base + user + path;
         if (!ossUtils.findObject(url)) {
-            fileCacheDao.insert(file);
-            fileCacheDao.deleteById(file);
+            System.out.println("can't find " + url);
+            // fileCacheDao.insert(file);
+            // fileCacheDao.deleteById(file);
+            return true;
         }
         return false;
     }

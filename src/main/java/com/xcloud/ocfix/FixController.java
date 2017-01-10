@@ -32,9 +32,9 @@ public class FixController {
         return list;
     }
 
-    @RequestMapping(value = "/fixfiles.do", method = RequestMethod.POST)
-    public void fixFiles() {
-        fixUtils.fixit(null);
+    @RequestMapping(value = "/fixfiles.do", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public boolean fixFiles(FileCacheVO file) {
+        return fixUtils.fixit(file);
     }
 
 }

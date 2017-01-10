@@ -59,7 +59,7 @@ function initUsers() {
 			});
 		},
 		error : function() {
-			alert('get users from mysql error ...');
+			$.notify("get users from mysql error ...", "error");
 		}
 	});
 }
@@ -73,7 +73,7 @@ function getFiles(user, storage) {
 			initTable(data);
 		},
 		error : function() {
-			alert('get files from mysql error ...');
+			$.notify("get files from mysql error ...", "error");
 		}
 	});
 }
@@ -178,11 +178,13 @@ function initTable(files) {
 	});
 	$remove.click(function() {
 		var ids = getIdSelections();
+		ids.forEach(function(e) {
+			removeFiles(e);
+		});
 		$table.bootstrapTable('remove', {
 			field : 'fileId',
 			values : ids
 		});
-		removeFiles(ids);
 		$remove.prop('disabled', true);
 		stopPropagation();
 	});
@@ -216,24 +218,70 @@ function getIndex(row) {
 	var $table = $('#table');
 	var allData = $table.bootstrapTable('getData');
 	for (; i < allData.length; i++) {
-		if (allData[i].fileId == row.fileId) {
+		if (allData[i].fileId === row.fileId) {
 			break;
 		}
 	}
 	return i;
 }
 
-function removeFiles(ids) {
-	alert(ids);
+function getFile(fileId) {
+	var fileinfo;
+	var $table = $('#table');
+	var allData = $table.bootstrapTable('getData');
+	for (var i = 0; i < allData.length; i++) {
+		if (allData[i].fileId === fileId) {
+			fileinfo = allData[i];
+			break;
+		}
+	}
+	return fileinfo;
+}
+
+function removeFiles(id) {
+	var fileinfo = getFile(id);
+	var url = getBasePath() + "/fixfiles.do";
+	$.ajax({
+		url : url,
+		type : 'post',
+		success : function(data) {
+			users = JSON.stringify(data);
+			var userMatcher = function(jsonStr) {
+				return function findMatches(q, cb) {
+					var matches = [];
+					var substrRegex = new RegExp(q, 'i');
+					var jsonObj = JSON.parse(jsonStr);
+					$.each(jsonObj, function(i, json) {
+						if (substrRegex.test(json.uid)) {
+							matches.push(json.uid);
+						}
+					});
+					cb(matches);
+				};
+			};
+
+			$('#input').typeahead({
+				hint : true,
+				highlight : true,
+				minLength : 1
+			}, {
+				name : 'users',
+				source : userMatcher(users)
+			});
+		},
+		error : function() {
+			$.notify("fix file error", "error");
+		}
+	});
 }
 
 window.operateEvents = {
 	'click .remove' : function(e, value, row, index) {
 		var $table = $('#table');
+		removeFiles(row.fileId);
 		$table.bootstrapTable('remove', {
 			field : 'fileId',
 			values : [ row.fileId ]
 		});
-		removeFiles(row.fileId);
 	}
 };
