@@ -86,6 +86,7 @@ function initUsers() {
 			spinner.spin();
 		},
 		error : function() {
+			spinner.spin();
 			$.notify("get users from mysql error ...", "error");
 		}
 	});
@@ -105,6 +106,7 @@ function getFiles(user, storage) {
 			spinner.spin();
 		},
 		error : function() {
+			spinner.spin();
 			$.notify("get files from mysql error ...", "error");
 		}
 	});
