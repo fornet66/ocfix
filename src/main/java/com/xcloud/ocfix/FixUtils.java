@@ -21,6 +21,7 @@ public class FixUtils {
         List<FileCacheVO> list = fileCacheDao.findByCondition(cond);
         boolean foundone = false;
         for (FileCacheVO file : list) {
+            file.setUserName(userName);
             file.setIfExists(true);
             String base = "data/";
             String user = userName + "/";
@@ -42,6 +43,9 @@ public class FixUtils {
     }
 
     public boolean fixit(FileCacheVO file) {
+        if (file == null) {
+            return false;
+        }
         String base = "data/";
         String user = file.getUserName() + "/";
         String path = file.getPath();
@@ -50,9 +54,8 @@ public class FixUtils {
         }
         String url = base + user + path;
         if (!ossUtils.findObject(url)) {
-            System.out.println("can't find " + url);
-            // fileCacheDao.insert(file);
-            // fileCacheDao.deleteById(file);
+            fileCacheDao.insert(file);
+            fileCacheDao.deleteById(file);
             return true;
         }
         return false;

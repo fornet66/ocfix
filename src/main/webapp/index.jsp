@@ -15,6 +15,7 @@
 <script src="vendor/bootstrap-table/locale/bootstrap-table-en-US.min.js"></script>
 <script src="vendor/bootstrap-table/extensions/export/bootstrap-table-export.min.js"></script>
 <script src="js/notify.min.js"></script>
+<script src="js/spin.min.js"></script>
 <script src="js/typeahead.bundle.min.js"></script>
 <script src="js/tableExport.js"></script>
 <script src="js/fixutils.js"></script>
@@ -43,6 +44,7 @@
 		</div>
 		<div class="col-md-3 col-sm3"></div>
 	</div>
+	<div id="loading"></div>
 	<div id="files" class="container" style="display:none">
 		<div id="toolbar">
 			<button id="remove" class="btn btn-danger" disabled>

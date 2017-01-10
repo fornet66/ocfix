@@ -1,3 +1,26 @@
+var opts = {
+  lines: 10 // The number of lines to draw
+, length: 20 // The length of each line
+, width: 8 // The line thickness
+, radius: 20 // The radius of the inner circle
+, scale: 1 // Scales overall size of the spinner
+, corners: 1 // Corner roundness (0..1)
+, color: '#000' // #rgb or #rrggbb or array of colors
+, opacity: 0.25 // Opacity of the lines
+, rotate: 40 // The rotation offset
+, direction: 1 // 1: clockwise, -1: counterclockwise
+, speed: 1 // Rounds per second
+, trail: 60 // Afterglow percentage
+, fps: 20 // Frames per second when using setTimeout() as a fallback for CSS
+, zIndex: 2e9 // The z-index (defaults to 2000000000)
+, className: 'spinner' // The CSS class to assign to the spinner
+, top: '49%' // Top position relative to parent
+, left: '50%' // Left position relative to parent
+, shadow: false // Whether to render a shadow
+, hwaccel: false // Whether to use hardware acceleration
+, position: 'absolute' // Element positioning
+};
+var spinner = new Spinner(opts);
 var users;
 $(document).ready(function() {
 	initUsers();
@@ -32,7 +55,11 @@ function initUsers() {
 	var url = getBasePath() + "/getusers.do";
 	$.ajax({
 		url : url,
-		type : 'post',
+		type : "POST",
+		beforeSend : function() {
+			var target = document.getElementById('loading');
+			spinner.spin(target);
+		},
 		success : function(data) {
 			users = JSON.stringify(data);
 			var userMatcher = function(jsonStr) {
@@ -48,7 +75,6 @@ function initUsers() {
 					cb(matches);
 				};
 			};
-
 			$('#input').typeahead({
 				hint : true,
 				highlight : true,
@@ -57,6 +83,7 @@ function initUsers() {
 				name : 'users',
 				source : userMatcher(users)
 			});
+			spinner.spin();
 		},
 		error : function() {
 			$.notify("get users from mysql error ...", "error");
@@ -68,9 +95,14 @@ function getFiles(user, storage) {
 	var url = getBasePath() + "/getfiles.do/" + user + "/" + storage;
 	$.ajax({
 		url : url,
-		type : 'post',
+		type : "POST",
+		beforeSend : function() {
+			var target = document.getElementById('loading');
+			spinner.spin(target);
+		},
 		success : function(data) {
 			initTable(data);
+			spinner.spin();
 		},
 		error : function() {
 			$.notify("get files from mysql error ...", "error");
@@ -243,31 +275,17 @@ function removeFiles(id) {
 	var url = getBasePath() + "/fixfiles.do";
 	$.ajax({
 		url : url,
-		type : 'post',
+		type : "POST",
+		dataType : "json",
+		contentType : "application/json",
+		data : JSON.stringify(fileinfo),
 		success : function(data) {
-			users = JSON.stringify(data);
-			var userMatcher = function(jsonStr) {
-				return function findMatches(q, cb) {
-					var matches = [];
-					var substrRegex = new RegExp(q, 'i');
-					var jsonObj = JSON.parse(jsonStr);
-					$.each(jsonObj, function(i, json) {
-						if (substrRegex.test(json.uid)) {
-							matches.push(json.uid);
-						}
-					});
-					cb(matches);
-				};
-			};
-
-			$('#input').typeahead({
-				hint : true,
-				highlight : true,
-				minLength : 1
-			}, {
-				name : 'users',
-				source : userMatcher(users)
-			});
+			if (data === true) {
+				$.notify("fix file ok", "info");
+			}
+			else {
+				$.notify("fix file error", "error");
+			}
 		},
 		error : function() {
 			$.notify("fix file error", "error");
