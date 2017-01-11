@@ -1,5 +1,6 @@
 package com.xcloud.ocfix;
 
+import com.aliyun.oss.ClientConfiguration;
 import com.aliyun.oss.OSSClient;
 
 public class OssUtils {
@@ -42,7 +43,7 @@ public class OssUtils {
     }
 
     public boolean findObject(String url) {
-        OSSClient client = new OSSClient(endpoint, accessKey, secretKey);
+        OSSClient client = new OSSClient(endpoint, accessKey, secretKey, new ClientConfiguration().setSupportCname(false));
         return client.doesObjectExist(bucketName, url);
     }
 
